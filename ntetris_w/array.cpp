@@ -202,7 +202,7 @@ typedef struct {
 	int y;
 	int count;
 	int rotate_index;
-	int block_index;
+	int block_index; 
 	int preview_block_index;
 
     char (*block_p)[4][4][4];
