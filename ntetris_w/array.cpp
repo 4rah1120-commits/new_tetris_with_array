@@ -221,10 +221,10 @@ tetris_var_t tetris_var =
     .rotate_index = 0,           // 회전 상태 (0~3)
     .block_index = 0,            // 현재 블록 종류
     .preview_block_index = 1,    // 다음 블록 미리보기
-    
+
     .block_p = block,            // 블록 배열 포인터
     .background_p = background   // 배경 배열 포인터
-}
+};          
 
 
 
@@ -237,8 +237,13 @@ tetris_var_t tetris_var =
 //void make_background()
 
 // 19-1. 포인터 적용해보기
-void make_background(char (*background_p)[12])
-{
+//void make_background(char (*background_p)[12])
+void make_background(tetris_var_t* var_p)
+{   
+	// 20-2. char (*background_p)[12] : 배열 하위항목 [12]개짜리 char형 배열을 가리키는 포인터 (주소)
+    // tetris_var_t* var_p 변수에서 이 주소에다 background_p 의 주소를 가져와서 대입
+	char (*background_p)[12] = var_p->background_p; //background_p를 이렇게 가져오는 거
+
     for (int j = 0; j < 22; j++)
     {
         for (int i = 0; i < 12; i++)
@@ -725,11 +730,11 @@ void main()
                     rotate_index_tmp = 0; // 회전 인덱스 초기화 (처음 블록으로 초기화)
                 }
 
-                int count_overlap_rotate = overlap_check_rotate(background_p, rotate_index_tmp, x, y);
+                int count_overlap_rotate = overlap_check_rotate(background_p, rotate_index_tmp, tetris_var.x, tetris_var.y);
                 if (count_overlap_rotate == 0) // 회전했을 때 겹치지 않았으면
                 {
 
-                    delete_block(background_p, x, y); // 현재 위치의 블록 지우기
+                    delete_block(background_p, tetris_var.x, tetris_var.y); // 현재 위치의 블록 지우기
 
                     rotate_index++; // 회전 인덱스 증가시키기 (= 회전시키기)
                     if (rotate_index == 4) // 0~3까지 회전 모양이 있으니까, 4가 되면 다시 0으로 초기화
@@ -737,7 +742,7 @@ void main()
                         rotate_index = 0; // 회전 인덱스 초기화 (처음 블록으로 초기화)
                     }
 
-                    make_block(block_p, x, y); // 인덱스 바꼈으니까 지금 그 인덱스 가진 녀석을 보이기
+                    make_block(block_p, tetris_var.x, tetris_var.y); // 인덱스 바꼈으니까 지금 그 인덱스 가진 녀석을 보이기
                 }
             }
 
@@ -746,33 +751,33 @@ void main()
             // S : 아래쪽으로 이동
             else if (key == 's')
             {
-                int count_overlap = overlap_check(background_p, x, y + 1); // 아래쪽으로 이동했을 때 겹친 횟수 확인
+                int count_overlap = overlap_check(background_p, tetris_var.x, tetris_var.y + 1); // 아래쪽으로 이동했을 때 겹친 횟수 확인
 
                 if (count_overlap == 0) // 겹치지 않았으면
                 {
                     // 현재 위치의 블록 지우기
-                    delete_block(background_p, x, y);
+                    delete_block(background_p, tetris_var.x, tetris_var.y);
 
                     // 아래로 한 칸 이동
-                    y++;
+                    tetris_var.y++;
 
                     // 이동한 위치에 블록 다시 출력
-                    make_block(block_p, x, y);
+                    make_block(block_p, tetris_var.x, tetris_var.y);
                 }
             }
 
             // A : 왼쪽으로 이동
             else if (key == 'a')
             {
-                int count_overlap = overlap_check(background_p, x - 1, y); // 왼쪽으로 이동했을 때 겹친 횟수 확인
+                int count_overlap = overlap_check(background_p, tetris_var.x - 1, tetris_var.y); // 왼쪽으로 이동했을 때 겹친 횟수 확인
 
                 if (count_overlap == 0) // 겹치지 않았으면
                 {
-                    delete_block(background_p, x, y);
+                    delete_block(background_p, tetris_var.x, tetris_var.y);
 
-                    x--;
+                    tetris_var.x--;
 
-                    make_block(block_p, x, y);
+                    make_block(block_p, tetris_var.x, tetris_var.y);
 
                     //overlap_check(x, y);
                 }
@@ -782,15 +787,15 @@ void main()
             // D : 오른쪽으로 이동
             else if (key == 'd')
             {
-                int count_overlap = overlap_check(background_p, x + 1, y); // 오른쪽으로 이동했을 때 겹친 횟수 확인
+                int count_overlap = overlap_check(background_p, tetris_var.x + 1, tetris_var.y); // 오른쪽으로 이동했을 때 겹친 횟수 확인
 
                 if (count_overlap == 0) // 겹치지 않았으면
                 {
-                    delete_block(background_p, x, y);
+                    delete_block(background_p, tetris_var.x, tetris_var.y);
 
-                    x++;
+                    tetris_var.x++;
 
-                    make_block(block_p, x, y);
+                    make_block(block_p, tetris_var.x, tetris_var.y);
 
                     //overlap_check(x, y); //
                 }
